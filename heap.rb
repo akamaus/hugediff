@@ -7,8 +7,10 @@ class Heap
 
   # вставка элемента
   def insert(elt)
-    @contents << elt
-    bubble_up(@contents.size - 1)
+    unless elt.key.nil?
+      @contents << elt
+      bubble_up(@contents.size - 1)
+    end
   end
 
   # извлечение элемента с минимальным ключом
