@@ -36,6 +36,7 @@ class ExtSort
     end
   end
 
+  # Sorts contents of the given source (supplied when was constucted) into the given destination
   def sort_to(dest)
     sort_pieces
     merge_pieces dest

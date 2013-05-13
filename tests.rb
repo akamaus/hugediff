@@ -24,7 +24,7 @@ class HeapTests < Test::Unit::TestCase
   end
 
   def test_heap_property
-    rnd = Random.new
+    rnd = Random.new(1)
     10.times { heap_test(rnd) }
   end
 
@@ -64,16 +64,16 @@ class ExtSortTests < Test::Unit::TestCase
   end
 
   def test_randomized
-    rnd = Random.new
-    10.times { random_test(rnd) }
+    rnd = Random.new(1)
+    100.times { random_test(rnd) }
   end
 
   def random_test(rnd)
     piece_size = 1 + rnd.rand(10)
-    size = rnd.rand(10000)
+    size = rnd.rand(100)
 
     arr = []
-    size.times { arr << rnd.rand(10**100).to_s }
+    size.times { arr << rnd.rand(10**50).to_s }
 
     sort_test(arr, piece_size)
   end
@@ -83,6 +83,7 @@ class ExtSortTests < Test::Unit::TestCase
     sorter = ExtSort.new(data.each,piece_size)
     sorter.sort_to(out)
     out.rewind
-    assert(data.sort == out.readlines, "failed with piece_size #{piece_size} applied to array of size #{data.length}\ndata:\n#{data.join "\n"} \nresult:\n#{out.readlines.join "\n"}")
+    res = out.readlines
+    assert(data.sort == res.map {|s| s.strip}, "failed with piece_size #{piece_size} applied to array of size #{data.length}\ndata:\n#{data.join "\n"} \nresult:\n#{res}")
   end
 end
