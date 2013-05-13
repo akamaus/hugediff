@@ -9,8 +9,7 @@ class ExtSort
 
   # Splits the source into several pieces, sorts them separately and stores to disk
   def sort_pieces
-    @streams = []
-
+    @headings = Heap.new
     cont = true
     while cont do
       piece = []
@@ -20,25 +19,33 @@ class ExtSort
         cont = false
       end
       piece.sort!
-      @streams << ExtStream.new(piece)
+      @headings.insert(ExtStream.new(piece))
       end
   end
 
-  # Merges several sorted pieces of input stream into one
-  def merge_pieces(dest)
-    headings = Heap.new
-    @streams.each { |s| headings.insert s }
-
-    while headings.size > 0 do
-      stream = headings.extract
-      dest.puts stream.next
-      headings.insert stream
+  # Merges several sorted pieces of input stream into one returning next element of it
+  def next
+    stream = @headings.extract
+    if stream
+      res = stream.next
+      @headings.insert stream
+      res
+    else
+      nil
     end
   end
 
-  # Sorts contents of the given source (supplied when was constucted) into the given destination
+  # Sorts contents of the given source (supplied when was constucted) putting it into the given destination stream
   def sort_to(dest)
     sort_pieces
-    merge_pieces dest
+    cont = true
+    while cont
+      elt = self.next
+      if elt
+        dest.puts elt
+      else
+        cont = false
+      end
+    end
   end
 end
