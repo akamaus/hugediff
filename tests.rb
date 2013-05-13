@@ -3,6 +3,7 @@ require 'stringio'
 
 load 'heap.rb'
 load 'ext_sort.rb'
+load 'huge_diff.rb'
 
 class N
   def initialize(k)
@@ -87,3 +88,28 @@ class ExtSortTests < Test::Unit::TestCase
     assert(data.sort == res.map {|s| s.strip}, "failed with piece_size #{piece_size} applied to array of size #{data.length}\ndata:\n#{data.join "\n"} \nresult:\n#{res}")
   end
 end
+
+class HugeDiffTests < Test::Unit::TestCase
+  def test_all_empty
+    run_test([],[])
+  end
+  def test_left_empty
+    run_test([], %w(first third second forth fifth))
+  end
+  def test_right_empty
+    run_test(%w(first third second forth fifth), [])
+  end
+  def test_regular
+    run_test(%w(first third fifth), %w(second forth))
+  end
+
+  def run_test(arr1,arr2)
+    left_diffs = []
+    right_diffs = []
+    hd = HugeDiff.new(arr1.each, arr2.each, 3)
+    hd.diff(Proc.new {|x| left_diffs << x}, Proc.new {|x| right_diffs << x})
+    assert_equal(left_diffs.map{|x| x.strip}.sort, (arr1 - arr2).sort)
+    assert_equal(right_diffs.map{|x| x.strip}.sort, (arr2 - arr1).sort)
+  end
+end
+

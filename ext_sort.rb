@@ -1,6 +1,9 @@
 load 'ext_stream.rb'
 load 'heap.rb'
 
+# External sorting implementation.
+# Works by first sorting pieces of input stream and storing them in temporary files.
+# Then pieces a merged using a heap.
 class ExtSort
   def initialize(source,piece_size)
     @source = source
