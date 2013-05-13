@@ -1,5 +1,6 @@
 load 'ext_sort.rb'
 
+# Class which makes the actual diff, first sorts given streams and then analyzes the results comparing them element-wise
 class HugeDiff
   def initialize(stream1, stream2, piece_size = 100000)
     @sorted1 = ExtSort.new(stream1, piece_size)
@@ -11,12 +12,13 @@ class HugeDiff
     @sorted1.sort_pieces
     @sorted2.sort_pieces
 
-    left = @sorted1.next
-    right = @sorted2.next
+    res = 0 # On the first iteration we should initialize both streams
 
     while true
-      res = compare(left, right)
       case res
+      when 0
+        left = @sorted1.next
+        right = @sorted2.next
       when nil
         break
       when -1
@@ -25,14 +27,12 @@ class HugeDiff
       when 1
         on_create.call(right)
         right = @sorted2.next
-      when 0
-        left = @sorted1.next
-        right = @sorted2.next
       end
+      res = compare(left, right)
     end
   end
 
-  # Compares two strings, nil is always bigger, so that we can deplete both sequences in one loop
+  # Compares two strings, nil(flags the end of sequence) is always bigger, so that we can deplete both sequences in one loop
   def compare(x,y)
     case
     when x.nil? && y.nil?
@@ -45,4 +45,6 @@ class HugeDiff
       x <=> y
     end
   end
+
+  private :compare
 end

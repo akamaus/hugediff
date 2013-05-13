@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+# Minimum-heap data structure.
+# Implemented as described at https://class.coursera.org/algo-2012-002/lecture/63
 class Heap
   def initialize()
     @contents = []
   end
 
-  # вставка элемента
+  # Inserts the element, zero keys are silently ignored
   def insert(elt)
     unless elt.key.nil?
       @contents << elt
@@ -13,7 +15,8 @@ class Heap
     end
   end
 
-  # извлечение элемента с минимальным ключом
+  # Extracts root of the heap, it's the element with the minimal key
+  # returns nil if heap is empty
   def extract()
     if size == 0 then nil
     else
@@ -24,14 +27,14 @@ class Heap
       root
     end
   end
-  # количество элементов в куче
+
+  # Number of elements in a heap
   def size()
     @contents.size
   end
 
-  ## служебные методы
-
-  # вытаскиваем элемент из глубины до полагающегося места
+  ## Service methods
+  # Promotes the element at the given index up until it fits it's place(immediate parent has a smaller key)
   def bubble_up(i)
     while i > 0
       parent = (i+1) / 2 - 1
@@ -42,7 +45,7 @@ class Heap
       end
     end
   end
-  # топим элемент, пока не выполнится свойство кучи
+  # Sinks the element until there are no childs with lesser keys
   def bubble_down(i)
     while true
       child1 = (i+1) * 2 - 1
@@ -65,4 +68,6 @@ class Heap
       end
     end
   end
+
+  private :bubble_up, :bubble_down
 end
